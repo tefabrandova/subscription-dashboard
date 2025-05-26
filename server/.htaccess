@@ -1,0 +1,14 @@
+RewriteEngine On
+RewriteRule ^$ public/ [L]
+RewriteRule (.*) public/$1 [L]
+
+# Prevent access to .env file
+<Files .env>
+  Order allow,deny
+  Deny from all
+</Files>
+
+# Enable CORS
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET,PUT,POST,DELETE,OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization"

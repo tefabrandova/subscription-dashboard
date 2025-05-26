@@ -28,6 +28,9 @@ export const useStore = create<State>((set, get) => ({
 
   addAccount: async (account) => {
     try {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError) throw userError;
+
       const { data, error } = await supabase
         .from('accounts')
         .insert([{
@@ -38,7 +41,8 @@ export const useStore = create<State>((set, get) => ({
           subscription_date: account.subscriptionDate,
           expiry_date: account.expiryDate,
           price: account.price,
-          linked_packages: account.linkedPackages
+          linked_packages: account.linkedPackages,
+          user_id: userData.user.id
         }])
         .select()
         .single();

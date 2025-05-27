@@ -18,6 +18,26 @@ export const useAccounts = () => {
   });
 };
 
+export const useAddAccount = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (account: Database['public']['Tables']['accounts']['Insert']) => {
+      const { data, error } = await supabase
+        .from('accounts')
+        .insert(account)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['accounts'] });
+    }
+  });
+};
+
 // Packages
 export const usePackages = () => {
   return useQuery({
@@ -30,6 +50,26 @@ export const usePackages = () => {
       
       if (error) throw error;
       return data;
+    }
+  });
+};
+
+export const useAddPackage = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (pkg: Database['public']['Tables']['packages']['Insert']) => {
+      const { data, error } = await supabase
+        .from('packages')
+        .insert(pkg)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['packages'] });
     }
   });
 };
@@ -49,6 +89,26 @@ export const useCustomers = () => {
       
       if (error) throw error;
       return data;
+    }
+  });
+};
+
+export const useAddCustomer = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (customer: Database['public']['Tables']['customers']['Insert']) => {
+      const { data, error } = await supabase
+        .from('customers')
+        .insert(customer)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['customers'] });
     }
   });
 };
@@ -97,67 +157,6 @@ export const useWorkspaceSettings = () => {
       
       if (error) throw error;
       return data;
-    }
-  });
-};
-
-// Mutations
-export const useAddAccount = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: async (account: Database['public']['Tables']['accounts']['Insert']) => {
-      const { data, error } = await supabase
-        .from('accounts')
-        .insert(account)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['accounts'] });
-    }
-  });
-};
-
-export const useAddPackage = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: async (pkg: Database['public']['Tables']['packages']['Insert']) => {
-      const { data, error } = await supabase
-        .from('packages')
-        .insert(pkg)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['packages'] });
-    }
-  });
-};
-
-export const useAddCustomer = () => {
-  const queryClient = useQueryClient();
-  
-  return useMutation({
-    mutationFn: async (customer: Database['public']['Tables']['customers']['Insert']) => {
-      const { data, error } = await supabase
-        .from('customers')
-        .insert(customer)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['customers'] });
     }
   });
 };

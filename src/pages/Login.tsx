@@ -23,10 +23,15 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const { data, error } = await signIn(email, password);
+      const { data, error: authError } = await signIn(email, password);
       
-      if (error) {
-        setError('Invalid email or password');
+      if (authError) {
+        if (authError.message === 'Invalid login credentials') {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else {
+          setError(authError.message || 'An error occurred during login');
+        }
+        setLoading(false);
         return;
       }
 
@@ -36,7 +41,8 @@ export default function Login() {
         navigate(from, { replace: true });
       }
     } catch (err) {
-      setError('An error occurred during login');
+      console.error('Login error:', err);
+      setError('An unexpected error occurred. Please try again later.');
     } finally {
       setLoading(false);
     }

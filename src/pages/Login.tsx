@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -155,6 +155,14 @@ export default function Login() {
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                   Remember me
                 </label>
+              </div>
+              <div className="text-sm">
+                <Link
+                  to="/reset-password"
+                  className="font-medium text-[#8a246c] hover:text-[#6d1d56]"
+                >
+                  Forgot your password?
+                </Link>
               </div>
             </div>
 

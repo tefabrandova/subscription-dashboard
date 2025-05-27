@@ -36,9 +36,9 @@ export default function Login() {
       }
 
       if (data?.user) {
-        const from = location.state?.from?.pathname || 
-          (data.user.user_metadata.role === 'admin' ? '/' : '/user-panel');
-        navigate(from, { replace: true });
+        const userRole = data.profile?.role || 'user';
+        const redirectPath = userRole === 'admin' ? '/admin-dashboard' : '/dashboard';
+        navigate(location.state?.from?.pathname || redirectPath, { replace: true });
       }
     } catch (err) {
       console.error('Login error:', err);

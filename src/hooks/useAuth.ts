@@ -11,16 +11,9 @@ export function useAuth() {
 
   useEffect(() => {
     // Check active sessions and sets the user
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        setCurrentUser({
-          id: session.user.id,
-          email: session.user.email!,
-          name: session.user.user_metadata.name || 'User',
-          role: session.user.user_metadata.role || 'user',
-          createdAt: session.user.created_at,
-          lastLogin: new Date().toISOString()
-        });
+        await updateUserData(session);
       }
       setLoading(false);
     });
@@ -28,14 +21,7 @@ export function useAuth() {
     // Listen for changes on auth state (sign in, sign out, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session) {
-        setCurrentUser({
-          id: session.user.id,
-          email: session.user.email!,
-          name: session.user.user_metadata.name || 'User',
-          role: session.user.user_metadata.role || 'user',
-          createdAt: session.user.created_at,
-          lastLogin: new Date().toISOString()
-        });
+        await updateUserData(session);
       } else {
         setCurrentUser(null);
       }
@@ -44,6 +30,39 @@ export function useAuth() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const updateUserData = async (session: any) => {
+    try {
+      // Fetch user profile data
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profileError) throw profileError;
+
+      setCurrentUser({
+        id: session.user.id,
+        email: session.user.email!,
+        name: session.user.user_metadata.name || 'User',
+        role: profile?.role || 'user',
+        createdAt: session.user.created_at,
+        lastLogin: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      // Set default user data if profile fetch fails
+      setCurrentUser({
+        id: session.user.id,
+        email: session.user.email!,
+        name: session.user.user_metadata.name || 'User',
+        role: 'user',
+        createdAt: session.user.created_at,
+        lastLogin: new Date().toISOString()
+      });
+    }
+  };
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -55,6 +74,13 @@ export function useAuth() {
       if (error) throw error;
 
       if (data.user) {
+        // Fetch user profile data
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.user.id)
+          .single();
+
         logActivity(
           'login',
           'user',
@@ -62,6 +88,14 @@ export function useAuth() {
           data.user.email || 'Unknown',
           `User logged in: ${data.user.email}`
         );
+
+        return { 
+          data: { 
+            ...data, 
+            profile 
+          }, 
+          error: null 
+        };
       }
 
       return { data, error: null };

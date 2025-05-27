@@ -33,15 +33,16 @@ export function useAuth() {
 
   const updateUserData = async (session: any) => {
     try {
-      // Fetch user profile data
+      // Fetch user profile data using maybeSingle() to handle no profile case
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', session.user.id)
-        .single();
+        .maybeSingle();
 
       if (profileError) throw profileError;
 
+      // Create user object with default role if profile doesn't exist
       setCurrentUser({
         id: session.user.id,
         email: session.user.email!,
@@ -74,12 +75,12 @@ export function useAuth() {
       if (error) throw error;
 
       if (data.user) {
-        // Fetch user profile data
+        // Fetch user profile data using maybeSingle() to handle no profile case
         const { data: profile } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', data.user.id)
-          .single();
+          .maybeSingle();
 
         logActivity(
           'login',

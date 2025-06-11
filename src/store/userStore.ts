@@ -12,20 +12,30 @@ interface UserState {
   setCurrentUser: (user: User | null) => void;
 }
 
-// Create default admin user if none exists
-const defaultAdmin: User = {
-  id: 'admin-1',
-  name: 'Admin',
-  email: 'admin@example.com',
-  password: 'admin123', // In production, this should be hashed
-  role: 'admin',
-  createdAt: new Date().toISOString()
-};
+// Create default users
+const defaultUsers: User[] = [
+  {
+    id: 'admin-1',
+    name: 'Admin',
+    email: 'admin@example.com',
+    password: 'admin123',
+    role: 'admin',
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'user-1',
+    name: 'User',
+    email: 'user@example.com',
+    password: 'user123',
+    role: 'user',
+    createdAt: new Date().toISOString()
+  }
+];
 
 export const useUserStore = create<UserState>()(
   persist(
     (set, get) => ({
-      users: [defaultAdmin],
+      users: defaultUsers,
       currentUser: null,
       addUser: (user) => {
         set((state) => ({ users: [...state.users, user] }));
@@ -72,6 +82,13 @@ export const useUserStore = create<UserState>()(
       setCurrentUser: (user) => {
         set({ currentUser: user });
         if (user) {
+          // Update the user's last login time
+          set((state) => ({
+            users: state.users.map((u) =>
+              u.id === user.id ? { ...u, lastLogin: new Date().toISOString() } : u
+            ),
+          }));
+          
           logActivity(
             'login',
             'user',

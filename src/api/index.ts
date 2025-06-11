@@ -1,4 +1,4 @@
-// API configuration for PHP backend
+// API configuration for Node.js backend
 const API_URL = window.location.origin + '/api';
 
 interface ApiResponse<T = any> {
@@ -66,7 +66,7 @@ class ApiClient {
 
   // Auth endpoints
   async login(email: string, password: string) {
-    const response = await this.request<{ user: any; token: string }>('/auth/login.php', {
+    const response = await this.request<{ user: any; token: string }>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
@@ -80,82 +80,82 @@ class ApiClient {
 
   // Accounts endpoints
   async getAccounts() {
-    return this.request<any[]>('/accounts/index.php');
+    return this.request<any[]>('/accounts');
   }
 
   async createAccount(account: any) {
-    return this.request<{ id: string }>('/accounts/index.php', {
+    return this.request<{ id: string }>('/accounts', {
       method: 'POST',
       body: JSON.stringify(account),
     });
   }
 
   async updateAccount(id: string, account: any) {
-    return this.request('/accounts/index.php?id=' + id, {
+    return this.request(`/accounts/${id}`, {
       method: 'PUT',
       body: JSON.stringify(account),
     });
   }
 
   async deleteAccount(id: string) {
-    return this.request('/accounts/index.php?id=' + id, {
+    return this.request(`/accounts/${id}`, {
       method: 'DELETE',
     });
   }
 
   // Packages endpoints
   async getPackages() {
-    return this.request<any[]>('/packages/index.php');
+    return this.request<any[]>('/packages');
   }
 
   async createPackage(pkg: any) {
-    return this.request<{ id: string }>('/packages/index.php', {
+    return this.request<{ id: string }>('/packages', {
       method: 'POST',
       body: JSON.stringify(pkg),
     });
   }
 
   async updatePackage(id: string, pkg: any) {
-    return this.request('/packages/index.php?id=' + id, {
+    return this.request(`/packages/${id}`, {
       method: 'PUT',
       body: JSON.stringify(pkg),
     });
   }
 
   async deletePackage(id: string) {
-    return this.request('/packages/index.php?id=' + id, {
+    return this.request(`/packages/${id}`, {
       method: 'DELETE',
     });
   }
 
   // Customers endpoints
   async getCustomers() {
-    return this.request<any[]>('/customers/index.php');
+    return this.request<any[]>('/customers');
   }
 
   async createCustomer(customer: any) {
-    return this.request<{ id: string }>('/customers/index.php', {
+    return this.request<{ id: string }>('/customers', {
       method: 'POST',
       body: JSON.stringify(customer),
     });
   }
 
   async updateCustomer(id: string, customer: any) {
-    return this.request('/customers/index.php?id=' + id, {
+    return this.request(`/customers/${id}`, {
       method: 'PUT',
       body: JSON.stringify(customer),
     });
   }
 
   async deleteCustomer(id: string) {
-    return this.request('/customers/index.php?id=' + id, {
+    return this.request(`/customers/${id}`, {
       method: 'DELETE',
     });
   }
 
   // Activity logs
   async getActivityLogs() {
-    return this.request<any[]>('/activity/index.php');
+    return this.request<any[]>('/activity');
   }
 }
 

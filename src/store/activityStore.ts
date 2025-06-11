@@ -1,12 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import axios from 'axios';
+import { api } from '../api';
 import type { ActivityLog, ActivityType, ObjectType } from '../types/activity';
 import { useUserStore } from './userStore';
-
-const api = axios.create({
-  baseURL: '/api'
-});
 
 interface ActivityState {
   logs: ActivityLog[];

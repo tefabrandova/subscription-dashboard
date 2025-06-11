@@ -43,7 +43,9 @@ export default function AccountModal({ isOpen, onClose, account }: AccountModalP
 
   const accountType = watch('type');
 
-  const { addAccount, updateAccount, accounts } = useStore();
+  const addAccount = useStore((state) => state.addAccount);
+  const updateAccount = useStore((state) => state.updateAccount);
+  const accounts = useStore((state) => state.accounts);
 
   useEffect(() => {
     if (isOpen) {
@@ -59,7 +61,7 @@ export default function AccountModal({ isOpen, onClose, account }: AccountModalP
     }
   }, [account, reset, isOpen]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = (data: any) => {
     // Validate required fields
     if (!data.name.trim()) {
       showDialog({
@@ -91,30 +93,22 @@ export default function AccountModal({ isOpen, onClose, account }: AccountModalP
       linkedPackages: Number(data.linkedPackages),
     };
 
-    try {
-      if (account) {
-        await updateAccount(account.id, formattedData);
-        showDialog({
-          type: 'success',
-          title: 'Success',
-          message: 'Account updated successfully'
-        });
-      } else {
-        await addAccount(formattedData);
-        showDialog({
-          type: 'success',
-          title: 'Success',
-          message: 'Account created successfully'
-        });
-      }
-      onClose();
-    } catch (error) {
+    if (account) {
+      updateAccount(account.id, formattedData);
       showDialog({
-        type: 'error',
-        title: 'Error',
-        message: error.message || 'An error occurred while saving the account'
+        type: 'success',
+        title: 'Success',
+        message: 'Account updated successfully'
+      });
+    } else {
+      addAccount({ ...formattedData, id: crypto.randomUUID() } as Account);
+      showDialog({
+        type: 'success',
+        title: 'Success',
+        message: 'Account created successfully'
       });
     }
+    onClose();
   };
 
   return (
@@ -184,7 +178,7 @@ export default function AccountModal({ isOpen, onClose, account }: AccountModalP
                             <tr>
                               {accountType === 'subscription' ? (
                                 <>
-                                  <th scope="col\" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Username</th>
+                                  <th scope="col" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Username</th>
                                   <th scope="col" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Password</th>
                                 </>
                               ) : (

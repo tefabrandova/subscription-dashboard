@@ -1,6 +1,18 @@
 # Enable RewriteEngine
 RewriteEngine On
 
+# API requests - route to PHP files
+# Handle specific API endpoints that map to PHP files
+RewriteRule ^api/auth/login/?$ api/auth/login.php [L]
+RewriteRule ^api/auth/middleware/?$ api/auth/middleware.php [L]
+RewriteRule ^api/accounts/?$ api/accounts/index.php [L]
+RewriteRule ^api/packages/?$ api/packages/index.php [L]
+RewriteRule ^api/customers/?$ api/customers/index.php [L]
+RewriteRule ^api/activity/?$ api/activity/index.php [L]
+
+# General API directory routing - append index.php for directory-like requests
+RewriteRule ^api/([^/]+)/?$ api/$1/index.php [L]
+
 # Handle client-side routing (SPA)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

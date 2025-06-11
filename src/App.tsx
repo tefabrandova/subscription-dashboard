@@ -18,6 +18,18 @@ import { useAuth } from './hooks/useAuth';
 function App() {
   const { loading } = useAuth();
 
+  // Hide loading spinner when app loads
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const loadingElement = document.getElementById('loading');
+      if (loadingElement) {
+        loadingElement.style.display = 'none';
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">

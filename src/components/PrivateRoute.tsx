@@ -16,7 +16,9 @@ export default function PrivateRoute({ children, allowedRoles }: PrivateRoutePro
   }
 
   if (allowedRoles && !allowedRoles.includes(currentUser.role)) {
-    return <Navigate to={currentUser.role === 'admin' ? '/' : '/user-panel'} replace />;
+    // Redirect to appropriate dashboard based on user role
+    const redirectPath = currentUser.role === 'admin' ? '/' : '/user-panel';
+    return <Navigate to={redirectPath} replace />;
   }
 
   return <>{children}</>;

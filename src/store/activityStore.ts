@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { api } from '../api';
+import api from '../api';
 import type { ActivityLog, ActivityType, ObjectType } from '../types/activity';
 import { useUserStore } from './userStore';
 

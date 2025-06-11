@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Download, Plus, Pencil, Trash2, DollarSign } from 'lucide-react';
-import { useStore } from '../store';
+import { useStore } from '../store/phpStore';
 import { useExpenseStore } from '../store/expenseStore';
 import { calculateTotalRevenue, calculateTotalExpenses, calculateNetProfit } from '../utils/revenue';
 import { format } from 'date-fns';

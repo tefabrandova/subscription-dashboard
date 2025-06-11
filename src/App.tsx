@@ -27,25 +27,27 @@ const queryClient = new QueryClient({
 });
 
 function AppContent() {
-  const { loading } = useAuth();
+  const { loading, user } = useAuth();
   const { fetchAccounts, fetchPackages, fetchCustomers } = useStore();
 
   useEffect(() => {
-    // Fetch initial data when app loads
-    const loadInitialData = async () => {
-      try {
-        await Promise.all([
-          fetchAccounts(),
-          fetchPackages(),
-          fetchCustomers()
-        ]);
-      } catch (error) {
-        console.error('Error loading initial data:', error);
-      }
-    };
+    // Only fetch data when user is authenticated
+    if (user) {
+      const loadInitialData = async () => {
+        try {
+          await Promise.all([
+            fetchAccounts(),
+            fetchPackages(),
+            fetchCustomers()
+          ]);
+        } catch (error) {
+          console.error('Error loading initial data:', error);
+        }
+      };
 
-    loadInitialData();
-  }, [fetchAccounts, fetchPackages, fetchCustomers]);
+      loadInitialData();
+    }
+  }, [user, fetchAccounts, fetchPackages, fetchCustomers]);
 
   if (loading) {
     return (
@@ -119,7 +121,7 @@ function AppContent() {
         } />
       </Route>
 
-      <Route path="*" element={<Navigate to="/login\" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

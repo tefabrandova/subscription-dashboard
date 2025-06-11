@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { supabase } from '../lib/supabase';
 import type { ActivityLog, ActivityType, ObjectType } from '../types/activity';
 import { useUserStore } from './userStore';
 
@@ -8,13 +9,15 @@ interface ActivityState {
   addLog: (log: Omit<ActivityLog, 'id' | 'timestamp' | 'userId' | 'userName' | 'userRole'>) => void;
   getLogs: () => ActivityLog[];
   clearLogs: () => void;
+  syncToDatabase: () => Promise<void>;
+  fetchFromDatabase: () => Promise<void>;
 }
 
 export const useActivityStore = create<ActivityState>()(
   persist(
     (set, get) => ({
       logs: [],
-      addLog: (log) => {
+      addLog: async (log) => {
         const currentUser = useUserStore.getState().currentUser;
         if (!currentUser) return;
 
@@ -30,9 +33,75 @@ export const useActivityStore = create<ActivityState>()(
         set((state) => ({
           logs: [newLog, ...state.logs]
         }));
+
+        // Save to Supabase
+        try {
+          await supabase
+            .from('activity_logs')
+            .insert({
+              user_id: currentUser.id,
+              action_type: log.actionType,
+              object_type: log.objectType,
+              object_id: log.objectId,
+              object_name: log.objectName,
+              details: log.details
+            });
+        } catch (error) {
+          console.error('Failed to save activity log to database:', error);
+        }
       },
       getLogs: () => get().logs,
-      clearLogs: () => set({ logs: [] })
+      clearLogs: () => set({ logs: [] }),
+      syncToDatabase: async () => {
+        const { logs } = get();
+        const currentUser = useUserStore.getState().currentUser;
+        if (!currentUser) return;
+
+        try {
+          const logsToSync = logs.map(log => ({
+            user_id: log.userId,
+            action_type: log.actionType,
+            object_type: log.objectType,
+            object_id: log.objectId,
+            object_name: log.objectName,
+            details: log.details,
+            created_at: log.timestamp
+          }));
+
+          await supabase
+            .from('activity_logs')
+            .upsert(logsToSync);
+        } catch (error) {
+          console.error('Failed to sync activity logs:', error);
+        }
+      },
+      fetchFromDatabase: async () => {
+        try {
+          const { data, error } = await supabase
+            .from('activity_logs')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (error) throw error;
+
+          const logs: ActivityLog[] = data.map(log => ({
+            id: log.id,
+            userId: log.user_id,
+            userName: 'User', // We'll need to join with profiles to get the actual name
+            userRole: 'user', // We'll need to join with profiles to get the actual role
+            actionType: log.action_type as ActivityType,
+            objectType: log.object_type as ObjectType,
+            objectId: log.object_id,
+            objectName: log.object_name,
+            details: log.details,
+            timestamp: log.created_at
+          }));
+
+          set({ logs });
+        } catch (error) {
+          console.error('Failed to fetch activity logs:', error);
+        }
+      }
     }),
     {
       name: 'activity-log-storage'

@@ -26,7 +26,7 @@ const renderCredentialsTable = (details: Credential[], type: AccountType) => {
           <tr>
             {type === 'subscription' ? (
               <>
-                <th scope="col" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Username</th>
+                <th scope="col\" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Username</th>
                 <th scope="col" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Password</th>
               </>
             ) : (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
@@ -13,8 +13,19 @@ import Admin from './pages/Admin';
 import UserPanel from './pages/UserPanel';
 import Notifications from './pages/Notifications';
 import ActivityLog from './pages/ActivityLog';
+import { useAuth } from './hooks/useAuth';
 
 function App() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>

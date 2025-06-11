@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Users, Bell, Search, UserPlus, Edit, Trash2, Shield } from 'lucide-react';
 import { useUserStore } from '../store/userStore';
-import { useStore } from '../store';
+import { useStore } from '../store/phpStore';
 import { checkExpiringAccounts, checkExpiringPackages } from '../utils/notifications';
 import UserModal from '../components/modals/UserModal';
 import ConfirmDialog from '../components/dialogs/ConfirmDialog';

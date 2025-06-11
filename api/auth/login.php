@@ -19,6 +19,13 @@ if (!isset($input['email']) || !isset($input['password'])) {
 $database = new Database();
 $db = $database->getConnection();
 
+// Check if database connection is valid
+if ($db === null) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Database connection failed']);
+    exit();
+}
+
 try {
     $query = "SELECT id, name, email, password, role, created_at, last_login FROM users WHERE email = :email";
     $stmt = $db->prepare($query);

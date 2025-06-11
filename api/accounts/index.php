@@ -5,6 +5,14 @@ require_once '../auth/middleware.php';
 
 $database = new Database();
 $db = $database->getConnection();
+
+// Check if database connection is valid
+if ($db === null) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Database connection failed']);
+    exit();
+}
+
 $userId = authenticateUser();
 $user = getCurrentUser($db, $userId);
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { X } from 'lucide-react';
-import { useStore } from '../store';
+import { useStore } from '../store/phpStore';
 import { formatDate } from '../utils/date';
 import { formatPrice } from '../utils/format';
 import type { Package, Account, Credential, AccountType, PriceDuration } from '../types';

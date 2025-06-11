@@ -1,7 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { DollarSign, TrendingUp, TrendingDown, Package } from 'lucide-react';
-import { useStore } from '../store';
+import { useStore } from '../store/phpStore';
 import { useExpenseStore } from '../store/expenseStore';
 import { calculateTotalRevenue, calculateTotalExpenses, calculateNetProfit, calculateMonthlyRevenue } from '../utils/revenue';
 import { format, subMonths } from 'date-fns';

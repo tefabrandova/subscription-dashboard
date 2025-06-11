@@ -1,7 +1,7 @@
 import React from 'react';
 import { Download } from 'lucide-react';
 import { exportData } from '../utils/export';
-import { useStore } from '../store';
+import { useStore } from '../store/phpStore';
 
 interface ExportButtonProps {
   data: any[];

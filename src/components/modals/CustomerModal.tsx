@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Dialog } from '@headlessui/react';
 import { AlertCircle } from 'lucide-react';
-import { useStore } from '../../store';
+import { useStore } from '../../store/phpStore';
 import SearchableSelect from '../SearchableSelect';
 import CountryCodeSelect from '../CountryCodeSelect';
 import AlertDialog from '../dialogs/AlertDialog';

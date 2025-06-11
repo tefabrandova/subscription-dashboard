@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { X, Package as PackageIcon, Phone, Mail, Clock, CheckCircle, XCircle, Tag, Pencil, Trash2 } from 'lucide-react';
-import { useStore } from '../store';
+import { useStore } from '../store/phpStore';
 import { formatDate } from '../utils/date';
 import { formatPrice } from '../utils/format';
 import { getSubscriptionStatus, getRemainingDays } from '../utils/subscription';

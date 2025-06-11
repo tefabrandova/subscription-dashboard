@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Plus } from 'lucide-react';
-import { useStore } from '../store';
+import { useStore } from '../store/phpStore';
 import CustomerModal from '../components/modals/CustomerModal';
 import CustomerProfile from '../components/CustomerProfile';
 import CustomerTableRow from '../components/CustomerTableRow';

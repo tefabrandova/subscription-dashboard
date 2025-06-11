@@ -19,7 +19,7 @@ import {
   History
 } from 'lucide-react';
 import { useUserStore } from '../store/userStore';
-import { useStore } from '../store';
+import { useStore } from '../store/phpStore';
 import NotificationBell from './NotificationBell';
 import { checkExpiringAccounts, checkExpiringPackages } from '../utils/notifications';
 

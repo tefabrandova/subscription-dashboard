@@ -1,7 +1,7 @@
 import React from 'react';
 import { Users, Package, UserCircle, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useStore } from '../store';
+import { useStore } from '../store/phpStore';
 import { useUserStore } from '../store/userStore';
 import { calculateTotalRevenue } from '../utils/revenue';
 import { getSubscriptionStatus } from '../utils/subscription';

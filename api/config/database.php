@@ -1,9 +1,9 @@
 <?php
 class Database {
     private $host = 'localhost';
-    private $db_name = 'expense_tracker_db';
-    private $username = 'root';
-    private $password = '';
+    private $db_name = 'bookvfke_subscription_db';
+    private $username = 'bookvfke_sub_user';
+    private $password = 'h)dc8SF^gyF4';
     private $conn;
 
     public function getConnection() {

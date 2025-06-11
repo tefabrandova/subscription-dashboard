@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
-import { useUserStore } from '../store/userStore';
+import { useAuth } from '../hooks/usePhpAuth';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ export default function Login() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { users, setCurrentUser } = useUserStore();
+  const { signIn } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,26 +21,19 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // Find user in local store
-      const user = users.find(u => u.email === email && u.password === password);
+      const { data, error: authError } = await signIn(email, password);
       
-      if (!user) {
-        setError('Invalid email or password. Please check your credentials and try again.');
+      if (authError) {
+        setError(authError.message || 'An error occurred during login');
         setLoading(false);
         return;
       }
 
-      // Update last login time
-      const updatedUser = {
-        ...user,
-        lastLogin: new Date().toISOString()
-      };
-
-      setCurrentUser(updatedUser);
-
-      // Navigate based on role
-      const redirectPath = user.role === 'admin' ? '/' : '/user-panel';
-      navigate(location.state?.from?.pathname || redirectPath, { replace: true });
+      if (data?.user) {
+        const userRole = data.user.role;
+        const redirectPath = userRole === 'admin' ? '/' : '/user-panel';
+        navigate(location.state?.from?.pathname || redirectPath, { replace: true });
+      }
     } catch (err) {
       console.error('Login error:', err);
       setError('An unexpected error occurred. Please try again later.');
@@ -169,6 +162,22 @@ export default function Login() {
               </button>
             </div>
           </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">Default credentials for testing</span>
+              </div>
+            </div>
+
+            <div className="mt-4 text-sm text-gray-600">
+              <p><strong>Admin:</strong> admin@example.com / password</p>
+              <p><strong>User:</strong> user@example.com / password</p>
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>

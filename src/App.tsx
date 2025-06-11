@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
@@ -14,17 +13,8 @@ import Admin from './pages/Admin';
 import UserPanel from './pages/UserPanel';
 import Notifications from './pages/Notifications';
 import ActivityLog from './pages/ActivityLog';
-import { useStore } from './store';
-import { useAuth } from './hooks/useAuth';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import { useStore } from './store/phpStore';
+import { useAuth } from './hooks/usePhpAuth';
 
 function AppContent() {
   const { loading, user } = useAuth();
@@ -121,18 +111,16 @@ function AppContent() {
         } />
       </Route>
 
-      <Route path="*" element={<Navigate to="/login\" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
 

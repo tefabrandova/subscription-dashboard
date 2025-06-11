@@ -1,8 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { supabase } from '../lib/supabase';
+import axios from 'axios';
 import type { ActivityLog, ActivityType, ObjectType } from '../types/activity';
 import { useUserStore } from './userStore';
+
+const api = axios.create({
+  baseURL: '/api'
+});
 
 interface ActivityState {
   logs: ActivityLog[];
@@ -34,20 +38,18 @@ export const useActivityStore = create<ActivityState>()(
           logs: [newLog, ...state.logs]
         }));
 
-        // Save to Supabase
+        // Save to backend API
         try {
-          await supabase
-            .from('activity_logs')
-            .insert({
-              user_id: currentUser.id,
-              action_type: log.actionType,
-              object_type: log.objectType,
-              object_id: log.objectId,
-              object_name: log.objectName,
-              details: log.details
-            });
+          await api.post('/activity', {
+            user_id: currentUser.id,
+            action_type: log.actionType,
+            object_type: log.objectType,
+            object_id: log.objectId,
+            object_name: log.objectName,
+            details: log.details
+          });
         } catch (error) {
-          console.error('Failed to save activity log to database:', error);
+          console.error('Failed to save activity log to backend:', error);
         }
       },
       getLogs: () => get().logs,
@@ -68,27 +70,21 @@ export const useActivityStore = create<ActivityState>()(
             created_at: log.timestamp
           }));
 
-          await supabase
-            .from('activity_logs')
-            .upsert(logsToSync);
+          await api.post('/activity/bulk', { logs: logsToSync });
         } catch (error) {
           console.error('Failed to sync activity logs:', error);
         }
       },
       fetchFromDatabase: async () => {
         try {
-          const { data, error } = await supabase
-            .from('activity_logs')
-            .select('*')
-            .order('created_at', { ascending: false });
+          const response = await api.get('/activity');
+          const data = response.data;
 
-          if (error) throw error;
-
-          const logs: ActivityLog[] = data.map(log => ({
+          const logs: ActivityLog[] = data.map((log: any) => ({
             id: log.id,
             userId: log.user_id,
-            userName: 'User', // We'll need to join with profiles to get the actual name
-            userRole: 'user', // We'll need to join with profiles to get the actual role
+            userName: log.user_name || 'User',
+            userRole: log.user_role || 'user',
             actionType: log.action_type as ActivityType,
             objectType: log.object_type as ObjectType,
             objectId: log.object_id,

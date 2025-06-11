@@ -59,77 +59,77 @@ function AppContent() {
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        
-        <Route path="/" element={
-          <PrivateRoute>
-            <Layout />
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      
+      <Route path="/" element={
+        <PrivateRoute>
+          <Layout />
+        </PrivateRoute>
+      }>
+        <Route index element={
+          <PrivateRoute allowedRoles={['admin']}>
+            <Dashboard />
           </PrivateRoute>
-        }>
-          <Route index element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <Dashboard />
-            </PrivateRoute>
-          } />
-          <Route path="accounts" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <Accounts />
-            </PrivateRoute>
-          } />
-          <Route path="packages" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <Packages />
-            </PrivateRoute>
-          } />
-          <Route path="customers" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <Customers />
-            </PrivateRoute>
-          } />
-          <Route path="revenue" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <Revenue />
-            </PrivateRoute>
-          } />
-          <Route path="reports" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <Reports />
-            </PrivateRoute>
-          } />
-          <Route path="activity-log" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <ActivityLog />
-            </PrivateRoute>
-          } />
-          <Route path="admin" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <Admin />
-            </PrivateRoute>
-          } />
-          <Route path="notifications" element={
-            <PrivateRoute>
-              <Notifications />
-            </PrivateRoute>
-          } />
-          <Route path="user-panel" element={
-            <PrivateRoute allowedRoles={['user']}>
-              <UserPanel />
-            </PrivateRoute>
-          } />
-        </Route>
+        } />
+        <Route path="accounts" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            <Accounts />
+          </PrivateRoute>
+        } />
+        <Route path="packages" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            <Packages />
+          </PrivateRoute>
+        } />
+        <Route path="customers" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            <Customers />
+          </PrivateRoute>
+        } />
+        <Route path="revenue" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            <Revenue />
+          </PrivateRoute>
+        } />
+        <Route path="reports" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            <Reports />
+          </PrivateRoute>
+        } />
+        <Route path="activity-log" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            <ActivityLog />
+          </PrivateRoute>
+        } />
+        <Route path="admin" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            <Admin />
+          </PrivateRoute>
+        } />
+        <Route path="notifications" element={
+          <PrivateRoute>
+            <Notifications />
+          </PrivateRoute>
+        } />
+        <Route path="user-panel" element={
+          <PrivateRoute allowedRoles={['user']}>
+            <UserPanel />
+          </PrivateRoute>
+        } />
+      </Route>
 
-        <Route path="*" element={<Navigate to="/login\" replace />} />
-      </Routes>
-    </BrowserRouter>
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 }
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppContent />
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }

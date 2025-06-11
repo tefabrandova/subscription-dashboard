@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { Dialog } from '@headlessui/react';
 import { X, Plus, Trash2 } from 'lucide-react';
-import { useStore } from '../../store/phpStore';
+import { useStore } from '../../store';
 import { useDialog } from '../../hooks/useDialog';
 import AlertDialog from '../dialogs/AlertDialog';
 import SearchableSelect from '../SearchableSelect';
@@ -224,7 +224,7 @@ export default function PackageModal({ isOpen, onClose, package: pkg }: PackageM
                             <tr>
                               {selectedAccount?.type === 'subscription' ? (
                                 <>
-                                  <th scope="col\" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Username</th>
+                                  <th scope="col" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Username</th>
                                   <th scope="col" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Password</th>
                                 </>
                               ) : (

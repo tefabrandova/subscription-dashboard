@@ -20,23 +20,18 @@ fi
 echo "📋 Copying .htaccess file..."
 cp public/.htaccess dist/
 
-# Create deployment package with both frontend and backend
+# Create deployment package
 echo "🗜️ Creating deployment package..."
-zip -r deployment.zip dist/ api/ database/ -x "*.DS_Store" "*.git*"
+cd dist
+zip -r ../deployment.zip . -x "*.DS_Store" "*.git*"
+cd ..
 
 echo "✅ Deployment package created: deployment.zip"
 echo ""
 echo "📋 Next steps:"
 echo "1. Upload deployment.zip to your Namecheap hosting"
-echo "2. Extract the contents:"
-echo "   - Move contents of 'dist' folder to public_html"
-echo "   - Move 'api' folder to public_html/api"
-echo "   - Move 'database' folder to public_html/database"
-echo "3. Set up your MySQL database using database/schema.sql"
-echo "4. Update api/config/database.php with your database credentials"
-echo "5. Test your application at your domain"
+echo "2. Extract the contents to your public_html folder"
+echo "3. Make sure your Supabase environment variables are correct"
+echo "4. Test your application at your domain"
 echo ""
-echo "🔧 Don't forget to:"
-echo "- Set proper file permissions (644 for files, 755 for directories)"
-echo "- Change default passwords in the database"
-echo "- Enable SSL certificate"
+echo "🔗 Your Supabase URL: ${VITE_SUPABASE_URL:-'Check your .env file'}"

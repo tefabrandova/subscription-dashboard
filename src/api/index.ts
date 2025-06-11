@@ -1,163 +1,33 @@
-// API configuration for Node.js backend
-const API_URL = window.location.origin + '/api';
+import axios from 'axios';
 
-interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
+const API_URL = process.env.VITE_API_URL || 'https://teckx.online/api';
 
-class ApiClient {
-  private baseURL: string;
-  private token: string | null = null;
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
-  constructor(baseURL: string) {
-    this.baseURL = baseURL;
-    this.token = localStorage.getItem('auth_token');
+// Add auth token to requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+  return config;
+});
 
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<ApiResponse<T>> {
-    const url = `${this.baseURL}${endpoint}`;
-    
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    };
-
-    if (this.token) {
-      headers.Authorization = `Bearer ${this.token}`;
+// Handle auth errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
     }
-
-    try {
-      const response = await fetch(url, {
-        ...options,
-        headers,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          this.clearToken();
-          window.location.href = '/login';
-        }
-        throw new Error(data.error || 'Request failed');
-      }
-
-      return data;
-    } catch (error) {
-      console.error('API request failed:', error);
-      throw error;
-    }
+    return Promise.reject(error);
   }
+);
 
-  setToken(token: string) {
-    this.token = token;
-    localStorage.setItem('auth_token', token);
-  }
-
-  clearToken() {
-    this.token = null;
-    localStorage.removeItem('auth_token');
-  }
-
-  // Auth endpoints
-  async login(email: string, password: string) {
-    const response = await this.request<{ user: any; token: string }>('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
-    
-    if (response.success && response.data) {
-      this.setToken(response.data.token);
-    }
-    
-    return response;
-  }
-
-  // Accounts endpoints
-  async getAccounts() {
-    return this.request<any[]>('/accounts');
-  }
-
-  async createAccount(account: any) {
-    return this.request<{ id: string }>('/accounts', {
-      method: 'POST',
-      body: JSON.stringify(account),
-    });
-  }
-
-  async updateAccount(id: string, account: any) {
-    return this.request(`/accounts/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(account),
-    });
-  }
-
-  async deleteAccount(id: string) {
-    return this.request(`/accounts/${id}`, {
-      method: 'DELETE',
-    });
-  }
-
-  // Packages endpoints
-  async getPackages() {
-    return this.request<any[]>('/packages');
-  }
-
-  async createPackage(pkg: any) {
-    return this.request<{ id: string }>('/packages', {
-      method: 'POST',
-      body: JSON.stringify(pkg),
-    });
-  }
-
-  async updatePackage(id: string, pkg: any) {
-    return this.request(`/packages/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(pkg),
-    });
-  }
-
-  async deletePackage(id: string) {
-    return this.request(`/packages/${id}`, {
-      method: 'DELETE',
-    });
-  }
-
-  // Customers endpoints
-  async getCustomers() {
-    return this.request<any[]>('/customers');
-  }
-
-  async createCustomer(customer: any) {
-    return this.request<{ id: string }>('/customers', {
-      method: 'POST',
-      body: JSON.stringify(customer),
-    });
-  }
-
-  async updateCustomer(id: string, customer: any) {
-    return this.request(`/customers/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(customer),
-    });
-  }
-
-  async deleteCustomer(id: string) {
-    return this.request(`/customers/${id}`, {
-      method: 'DELETE',
-    });
-  }
-
-  // Activity logs
-  async getActivityLogs() {
-    return this.request<any[]>('/activity');
-  }
-}
-
-export const api = new ApiClient(API_URL);
 export default api;

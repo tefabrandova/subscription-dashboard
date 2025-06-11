@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, UserPlus, Package, Filter } from 'lucide-react';
-import { useStore } from '../store/phpStore';
+import { useStore } from '../store';
 import CustomerModal from '../components/modals/CustomerModal';
 import CustomerProfile from '../components/CustomerProfile';
 import CustomerTableRow from '../components/CustomerTableRow';

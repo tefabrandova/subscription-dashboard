@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, X } from 'lucide-react';
-import { useStore } from '../store/phpStore';
+import { useStore } from '../store';
 
 export default function LogoUpload() {
   const [isDragging, setIsDragging] = useState(false);

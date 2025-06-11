@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { Dialog } from '@headlessui/react';
 import { X, Plus, Trash2 } from 'lucide-react';
-import { useStore } from '../../store/phpStore';
+import { useStore } from '../../store';
 import { useDialog } from '../../hooks/useDialog';
 import AlertDialog from '../dialogs/AlertDialog';
 import type { Account, AccountType, Credential } from '../../types';

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
-import { useAuth } from '../hooks/usePhpAuth';
+import { useUserStore } from '../store/userStore';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ export default function Login() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { signIn } = useAuth();
+  const { users, setCurrentUser } = useUserStore();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,19 +21,26 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const { data, error: authError } = await signIn(email, password);
+      // Find user in local store
+      const user = users.find(u => u.email === email && u.password === password);
       
-      if (authError) {
-        setError(authError.message || 'An error occurred during login');
+      if (!user) {
+        setError('Invalid email or password. Please check your credentials and try again.');
         setLoading(false);
         return;
       }
 
-      if (data?.user) {
-        const userRole = data.user.role;
-        const redirectPath = userRole === 'admin' ? '/' : '/user-panel';
-        navigate(location.state?.from?.pathname || redirectPath, { replace: true });
-      }
+      // Update last login time
+      const updatedUser = {
+        ...user,
+        lastLogin: new Date().toISOString()
+      };
+
+      setCurrentUser(updatedUser);
+
+      // Navigate based on role
+      const redirectPath = user.role === 'admin' ? '/' : '/user-panel';
+      navigate(location.state?.from?.pathname || redirectPath, { replace: true });
     } catch (err) {
       console.error('Login error:', err);
       setError('An unexpected error occurred. Please try again later.');

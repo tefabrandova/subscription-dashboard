@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { X } from 'lucide-react';
-import { useStore } from '../store/phpStore';
+import { useStore } from '../store';
 import { formatDate } from '../utils/date';
 import { formatPrice } from '../utils/format';
 import type { Package, Account, Credential, AccountType, PriceDuration } from '../types';
@@ -26,7 +26,7 @@ const renderCredentialsTable = (details: Credential[], type: AccountType) => {
           <tr>
             {type === 'subscription' ? (
               <>
-                <th scope="col\" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Username</th>
+                <th scope="col" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Username</th>
                 <th scope="col" className="w-1/4 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase border-r border-gray-200">Password</th>
               </>
             ) : (

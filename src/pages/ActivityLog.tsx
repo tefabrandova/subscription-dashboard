@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
-import { Download } from 'lucide-react';
-import { useActivityStore } from '../store/phpActivityStore';
+import { Filter, Download, Search } from 'lucide-react';
+import { useActivityStore } from '../store/activityStore';
 import TableSearch from '../components/TableSearch';
 import TableFilter from '../components/TableFilter';
 import { useTableSort } from '../hooks/useTableSort';
@@ -28,11 +28,7 @@ const objectTypeOptions = [
 
 export default function ActivityLog() {
   const [searchTerm, setSearchTerm] = useState('');
-  const { logs, loading, fetchLogs } = useActivityStore();
-
-  useEffect(() => {
-    fetchLogs();
-  }, [fetchLogs]);
+  const logs = useActivityStore((state) => state.logs);
 
   const {
     items: filteredLogs,
@@ -64,14 +60,6 @@ export default function ActivityLog() {
     link.download = `activity_log_${format(new Date(), 'yyyy-MM-dd')}.csv`;
     link.click();
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div>

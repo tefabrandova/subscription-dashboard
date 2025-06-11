@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Plus, Pencil, Trash2, Users, Info } from 'lucide-react';
-import { useStore } from '../store/phpStore';
+import { useStore } from '../store';
 import PackageModal from '../components/modals/PackageModal';
 import InfoCard from '../components/InfoCard';
 import ConfirmDialog from '../components/dialogs/ConfirmDialog';

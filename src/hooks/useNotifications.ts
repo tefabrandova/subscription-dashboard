@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useStore } from '../store/phpStore';
+import { useStore } from '../store';
 import { getRemainingDays } from '../utils/date';
 import { sendExpiryNotification } from '../utils/notifications';
 

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User } from '../types/user';
-import { logActivity } from './activityStore';
+import { logActivity } from './phpActivityStore';
 
 interface UserState {
   users: User[];

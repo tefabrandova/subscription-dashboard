@@ -1,6 +1,6 @@
 import React from 'react';
 import { Bell, Calendar, User, Package } from 'lucide-react';
-import { useStore } from '../store';
+import { useStore } from '../store/phpStore';
 import { useUserStore } from '../store/userStore';
 import { checkExpiringAccounts, checkExpiringPackages } from '../utils/notifications';
 import { formatDate } from '../utils/date';

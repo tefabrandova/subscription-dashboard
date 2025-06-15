@@ -14,11 +14,12 @@ import UserPanel from './pages/UserPanel';
 import Notifications from './pages/Notifications';
 import ActivityLog from './pages/ActivityLog';
 import { useAuth } from './hooks/useAuth';
+import { testSupabaseConnection } from './lib/supabase';
 
 function App() {
   const { loading } = useAuth();
 
-  // Hide loading spinner when app loads
+  // Hide loading spinner when app loads and test Supabase connection
   useEffect(() => {
     const timer = setTimeout(() => {
       const loadingElement = document.getElementById('loading');
@@ -27,13 +28,25 @@ function App() {
       }
     }, 500);
 
+    // Test Supabase connection
+    testSupabaseConnection().then(connected => {
+      if (connected) {
+        console.log('🎉 Successfully connected to Supabase!');
+      } else {
+        console.error('❌ Failed to connect to Supabase. Please check your credentials.');
+      }
+    });
+
     return () => clearTimeout(timer);
   }, []);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Connecting to Supabase...</p>
+        </div>
       </div>
     );
   }

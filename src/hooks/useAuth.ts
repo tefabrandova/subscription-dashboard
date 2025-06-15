@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, testSupabaseConnection } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { logActivity } from '../store/activityStore';
@@ -10,6 +10,9 @@ export function useAuth() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Test Supabase connection on app start
+    testSupabaseConnection();
+
     // Check active sessions and sets the user
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
@@ -20,6 +23,8 @@ export function useAuth() {
 
     // Listen for changes on auth state (sign in, sign out, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email);
+      
       if (session) {
         await updateUserData(session);
       } else {
@@ -58,7 +63,7 @@ export function useAuth() {
 
       // Create profile if it doesn't exist
       if (!profile) {
-        await supabase
+        const { error: insertError } = await supabase
           .from('profiles')
           .insert({
             id: session.user.id,
@@ -66,6 +71,10 @@ export function useAuth() {
             role: 'user',
             display_name: userData.name
           });
+
+        if (insertError) {
+          console.error('Error creating profile:', insertError);
+        }
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
